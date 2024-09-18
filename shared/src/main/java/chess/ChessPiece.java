@@ -66,4 +66,9 @@ public class ChessPiece {
                 break;
         }
     }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" + "type=" + type + ", color=" + color + '}';
+    }
 }
