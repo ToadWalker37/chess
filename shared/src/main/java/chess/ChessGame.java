@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -9,16 +10,18 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private boolean teamTurn;
 
     public ChessGame() {
-
+        this.teamTurn = true;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        if (this.teamTurn) { return TeamColor.WHITE; }
+        else { return TeamColor.BLACK; }
     }
 
     /**
@@ -27,7 +30,8 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        if (team == TeamColor.WHITE) { this.teamTurn = true; }
+        else { this.teamTurn = false; }
     }
 
     /**
