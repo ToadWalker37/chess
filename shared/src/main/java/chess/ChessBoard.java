@@ -26,7 +26,10 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
-    public ChessPiece getPiece(ChessPosition position) { return this.Board[position.getRow()][position.getColumn()]; }
+    public ChessPiece getPiece(ChessPosition position) {
+        if (position.getRow() < 0 || position.getColumn() < 0) { throw new RuntimeException("Out of bounds - position off chess board"); }
+        return this.Board[position.getRow()][position.getColumn()];
+    }
 
     /**
      * Sets the board to the default starting board

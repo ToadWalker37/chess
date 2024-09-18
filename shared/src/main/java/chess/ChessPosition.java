@@ -11,28 +11,29 @@ public class ChessPosition {
     private final int col;
 
     public ChessPosition(int row, int col) {
-        this.row = row;
-        this.col = col;
+        if (row >=0 && row <= 7) { this.row = row; }
+        else { this.row = -1; }
+        if (col >=0 && col <= 7) { this.col = col; }
+        else { this.col = -1; }
     }
 
     /**
      * @return which row this position is in
      * 1 codes for the bottom row
      */
-    public int getRow() {
-        return this.row;
-    }
+    public int getRow() { return this.row; }
 
     /**
      * @return which column this position is in
      * 1 codes for the left row
      */
-    public int getColumn() {
-        return this.col;
-    }
+    public int getColumn() { return this.col; }
+
+    /**
+     * @return true if position is valid, false otherwise
+     */
+    public boolean isValid() { return (this.row >= 0 && this.col >= 0); }
 
     @Override
-    public String toString() {
-        return "ChessPosition{" + "row=" + row + ", col=" + col + '}';
-    }
+    public String toString() { return "ChessPosition{" + "row=" + row + ", col=" + col + '}'; }
 }

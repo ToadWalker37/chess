@@ -51,8 +51,25 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessPosition[] validMoves = new ChessPosition[64];
         switch (this.type) {
             case KING:
+                int totalValidMoves = 0;
+                ChessPosition[] possibleMoves = new ChessPosition[8];
+                possibleMoves[0] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1);
+                possibleMoves[1] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn());
+                possibleMoves[2] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1);
+                possibleMoves[3] = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1);
+                possibleMoves[4] = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1);
+                possibleMoves[5] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1);
+                possibleMoves[6] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn());
+                possibleMoves[7] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1);
+                for (ChessPosition possibleMove : possibleMoves) {
+                    if (possibleMove.isValid() && board.getPiece(possibleMove) == null) {
+                        validMoves[totalValidMoves] = possibleMove;
+                        totalValidMoves++;
+                    }
+                }
                 break;
             case QUEEN:
                 break;
@@ -65,6 +82,7 @@ public class ChessPiece {
             case PAWN:
                 break;
         }
+        return validMoves;
     }
 
     @Override
