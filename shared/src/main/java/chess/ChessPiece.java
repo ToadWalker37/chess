@@ -53,8 +53,29 @@ public class ChessPiece {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
         if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board or doesn't take you anywhere
         if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal
-            for (int i = 1; i < abs(rowOffset); i++) {
-                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
+            if (rowOffset < 0) {
+                if (colOffset < 0) {
+                    for (int i = 1; i < abs(rowOffset); i++) {
+                        if (board.getPiece(new ChessPosition(position.getRow()-i, position.getColumn()-i)) != null) { return null; } // if there's a blocking piece
+                    }
+                }
+                else {
+                    for (int i = 1; i < abs(rowOffset); i++) {
+                        if (board.getPiece(new ChessPosition(position.getRow()-i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
+                    }
+                }
+            }
+            else {
+                if (colOffset < 0) {
+                    for (int i = 1; i < abs(rowOffset); i++) {
+                        if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()-i)) != null) { return null; } // if there's a blocking piece
+                    }
+                }
+                else {
+                    for (int i = 1; i < abs(rowOffset); i++) {
+                        if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
+                    }
+                }
             }
         }
         if (rowOffset == 0) {
