@@ -14,9 +14,11 @@ import static java.lang.Math.abs;
 public class ChessPiece {
     private PieceType type;
     private ChessGame.TeamColor color;
+    private boolean used;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
+        this.used = false;
     }
 
     /**
@@ -52,71 +54,86 @@ public class ChessPiece {
     public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset) {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
         if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board or doesn't take you anywhere
-        if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal
-            if (rowOffset < 0) {
-                if (colOffset < 0) {
-                    for (int i = 1; i < abs(rowOffset); i++) {
-                        if (board.getPiece(new ChessPosition(position.getRow()-i, position.getColumn()-i)) != null) { return null; } // if there's a blocking piece
-                    }
-                }
-                else {
-                    for (int i = 1; i < abs(rowOffset); i++) {
-                        if (board.getPiece(new ChessPosition(position.getRow()-i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
-                    }
-                }
+        if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; } // if you would be taking a piece of your own color
+        if (this.type == PieceType.PAWN) {
+            boolean promotion = false;
+            if (rowOffset > 1 && this.used) { return null; } // don't allow the initial double move if the piece has been moved
+            if (colOffset == 0 && board.getPiece(new ChessPosition(position.getRow()+1, position.getColumn())) != null) { return null; } // if blocking piece
+            if (abs(colOffset) > 0 && board.getPiece(new ChessPosition(position.getRow()+1, position.getColumn())) == null) { return null; } // if no piece to capture
+            if ((this.color == ChessGame.TeamColor.BLACK && newPosition.getRow() == 1) || (this.color == ChessGame.TeamColor.WHITE && newPosition.getRow() == 8)) { // promotion
+                promotion = true;
             }
-            else {
-                if (colOffset < 0) {
-                    for (int i = 1; i < abs(rowOffset); i++) {
-                        if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()-i)) != null) { return null; } // if there's a blocking piece
-                    }
-                }
-                else {
-                    for (int i = 1; i < abs(rowOffset); i++) {
-                        if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
-                    }
-                }
-            }
+            if (promotion) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
+            else { return new ChessMove(position, newPosition, null); }
         }
-        if (rowOffset == 0) {
-            if (colOffset < 0) { // if the move is going left
-                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                    ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() - i);
-                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
-                        return null;
+        else {
+            if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal
+                if (rowOffset < 0) {
+                    if (colOffset < 0) {
+                        for (int i = 1; i < abs(rowOffset); i++) {
+                            if (board.getPiece(new ChessPosition(position.getRow() - i, position.getColumn() - i)) != null) {
+                                return null;
+                            } // if there's a blocking piece
+                        }
+                    } else {
+                        for (int i = 1; i < abs(rowOffset); i++) {
+                            if (board.getPiece(new ChessPosition(position.getRow() - i, position.getColumn() + i)) != null) {
+                                return null;
+                            } // if there's a blocking piece
+                        }
+                    }
+                } else {
+                    if (colOffset < 0) {
+                        for (int i = 1; i < abs(rowOffset); i++) {
+                            if (board.getPiece(new ChessPosition(position.getRow() + i, position.getColumn() - i)) != null) {
+                                return null;
+                            } // if there's a blocking piece
+                        }
+                    } else {
+                        for (int i = 1; i < abs(rowOffset); i++) {
+                            if (board.getPiece(new ChessPosition(position.getRow() + i, position.getColumn() + i)) != null) {
+                                return null;
+                            } // if there's a blocking piece
+                        }
                     }
                 }
             }
-            else { // if the move is going right
-                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                    ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() + i);
-                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
-                        return null;
+            if (rowOffset == 0) {
+                if (colOffset < 0) { // if the move is going left
+                    for (int i = 0; i < abs(rowOffset + colOffset); i++) {
+                        ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() - i);
+                        if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                            return null;
+                        }
+                    }
+                } else { // if the move is going right
+                    for (int i = 0; i < abs(rowOffset + colOffset); i++) {
+                        ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() + i);
+                        if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                            return null;
+                        }
                     }
                 }
             }
+            if (colOffset == 0) { // if move is straight and there's a blocking piece
+                if (rowOffset < 0) { // if the move is going down
+                    for (int i = 0; i < abs(rowOffset + colOffset); i++) {
+                        ChessPosition tempPosition = new ChessPosition(position.getRow() - i, position.getColumn());
+                        if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                            return null;
+                        }
+                    }
+                } else { // if the move is going up
+                    for (int i = 0; i < abs(rowOffset + colOffset); i++) {
+                        ChessPosition tempPosition = new ChessPosition(position.getRow() + i, position.getColumn());
+                        if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return new ChessMove(position, newPosition, null);
         }
-        if (colOffset == 0) { // if move is straight and there's a blocking piece
-            if (rowOffset < 0) { // if the move is going down
-                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                    ChessPosition tempPosition = new ChessPosition(position.getRow() - i, position.getColumn());
-                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
-                        return null;
-                    }
-                }
-            }
-            else { // if the move is going up
-                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                    ChessPosition tempPosition = new ChessPosition(position.getRow() + i, position.getColumn());
-                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
-                        return null;
-                    }
-                }
-            }
-        }
-        if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; }
-        if (this.type == PieceType.PAWN) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
-        return new ChessMove(position, newPosition, null);
     }
 
     /**
@@ -181,11 +198,24 @@ public class ChessPiece {
                 }
                 break;
             case PAWN:
-                break;
+                if (this.color == ChessGame.TeamColor.BLACK) {
+                    possibleMoves.add(formulateMove(board, myPosition, -1, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, -2, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, -1, -1));
+                    possibleMoves.add(formulateMove(board, myPosition, -1, 1));
+                }
+                else {
+                    possibleMoves.add(formulateMove(board, myPosition, 1, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, 2, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, 1, -1));
+                    possibleMoves.add(formulateMove(board, myPosition, 1, 1));
+                }
+            break;
         }
         for (ChessMove possibleMove : possibleMoves) {
             if (possibleMove != null) { validMoves.add(possibleMove); }
         }
+        if (!validMoves.isEmpty()) { this.used = true; }
         return validMoves;
     }
 
