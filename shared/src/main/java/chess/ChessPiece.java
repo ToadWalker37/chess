@@ -1,6 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+
+import static java.lang.Math.abs;
 
 /**
  * Represents a single chess piece
@@ -44,6 +47,26 @@ public class ChessPiece {
     }
 
     /**
+     * @return null if move is invalid, or the proper move given the rows and columns desired to move
+     */
+    public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset) {
+        ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
+        if (!newPosition.isValid()) { return null; } // if move takes you off the board
+        if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal and there's a blocking piece
+            for (int i = 0; i < abs(rowOffset); i++) {
+                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; }
+            }
+        }
+        if (rowOffset == 0 || colOffset == 0) { // if move is straight and there's a blocking piece
+            for (int i = 0; i < abs(rowOffset+colOffset); i++) {
+                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; }
+            }
+        }
+        if (this.type == PieceType.PAWN) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
+        return new ChessMove(position, newPosition, null);
+    }
+
+    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
@@ -51,24 +74,20 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPosition[] validMoves = new ChessPosition[64];
+        Collection<ChessMove> validMoves = new ArrayList<>();
         switch (this.type) {
             case KING:
-                int totalValidMoves = 0;
-                ChessPosition[] possibleMoves = new ChessPosition[8];
-                possibleMoves[0] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1);
-                possibleMoves[1] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn());
-                possibleMoves[2] = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1);
-                possibleMoves[3] = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1);
-                possibleMoves[4] = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1);
-                possibleMoves[5] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1);
-                possibleMoves[6] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn());
-                possibleMoves[7] = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1);
-                for (ChessPosition possibleMove : possibleMoves) {
-                    if (possibleMove.isValid() && board.getPiece(possibleMove) == null) {
-                        validMoves[totalValidMoves] = possibleMove;
-                        totalValidMoves++;
-                    }
+                Collection<ChessMove> possibleMoves = new ArrayList<>();
+                possibleMoves.add(formulateMove(board, myPosition, -1, -1));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 0));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 1));
+                possibleMoves.add(formulateMove(board, myPosition, 0, -1));
+                possibleMoves.add(formulateMove(board, myPosition, 0, 1));
+                possibleMoves.add(formulateMove(board, myPosition, 1, -1));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 0));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 1));
+                for (ChessMove possibleMove : possibleMoves) {
+                    if (possibleMove != null) { validMoves.add(possibleMove); }
                 }
                 break;
             case QUEEN:
