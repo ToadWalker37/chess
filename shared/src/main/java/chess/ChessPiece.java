@@ -75,9 +75,9 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessMove> possibleMoves = new ArrayList<>();
         switch (this.type) {
             case KING:
-                Collection<ChessMove> possibleMoves = new ArrayList<>();
                 possibleMoves.add(formulateMove(board, myPosition, -1, -1));
                 possibleMoves.add(formulateMove(board, myPosition, -1, 0));
                 possibleMoves.add(formulateMove(board, myPosition, -1, 1));
@@ -86,9 +86,6 @@ public class ChessPiece {
                 possibleMoves.add(formulateMove(board, myPosition, 1, -1));
                 possibleMoves.add(formulateMove(board, myPosition, 1, 0));
                 possibleMoves.add(formulateMove(board, myPosition, 1, 1));
-                for (ChessMove possibleMove : possibleMoves) {
-                    if (possibleMove != null) { validMoves.add(possibleMove); }
-                }
                 break;
             case QUEEN:
                 break;
@@ -100,6 +97,9 @@ public class ChessPiece {
                 break;
             case PAWN:
                 break;
+        }
+        for (ChessMove possibleMove : possibleMoves) {
+            if (possibleMove != null) { validMoves.add(possibleMove); }
         }
         return validMoves;
     }
