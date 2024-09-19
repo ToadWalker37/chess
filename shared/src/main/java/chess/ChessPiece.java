@@ -102,6 +102,12 @@ public class ChessPiece {
                 }
                 break;
             case BISHOP:
+                for (int i = -7; i < 8; i++) { // Diagonal Volvo-logo-style
+                    possibleMoves.add(formulateMove(board, myPosition, i, i));
+                }
+                for (int i = -7; i < 8; i++) { // Diagonal opposite-Volvo-logo-style
+                    possibleMoves.add(formulateMove(board, myPosition, i, -i));
+                }
                 break;
             case KNIGHT:
                 break;
