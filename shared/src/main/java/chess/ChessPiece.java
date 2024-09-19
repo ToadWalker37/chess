@@ -51,26 +51,49 @@ public class ChessPiece {
      */
     public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset) {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
-        if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board
-        if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal and there's a blocking piece
-            for (int i = 0; i < abs(rowOffset); i++) {
-                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; }
+        if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board or doesn't take you anywhere
+        if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal
+            for (int i = 1; i < abs(rowOffset); i++) {
+                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; } // if there's a blocking piece
             }
         }
-        if (rowOffset == 0 || colOffset == 0) { // if move is straight and there's a blocking piece
-            for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                if (rowOffset < 0 || colOffset < 0) {
-                    if (board.getPiece(new ChessPosition(position.getRow() - i, position.getColumn() - i)) != null) {
-                        return null;
-                    }
-                }
-                else {
-                    if (board.getPiece(new ChessPosition(position.getRow() + i, position.getColumn() + i)) != null) {
+        if (rowOffset == 0) {
+            if (colOffset < 0) { // if the move is going left
+                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
+                    ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() - i);
+                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
                         return null;
                     }
                 }
             }
+            else { // if the move is going right
+                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
+                    ChessPosition tempPosition = new ChessPosition(position.getRow(), position.getColumn() + i);
+                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                        return null;
+                    }
+                }
+            }
         }
+        if (colOffset == 0) { // if move is straight and there's a blocking piece
+            if (rowOffset < 0) { // if the move is going down
+                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
+                    ChessPosition tempPosition = new ChessPosition(position.getRow() - i, position.getColumn());
+                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                        return null;
+                    }
+                }
+            }
+            else { // if the move is going up
+                for (int i = 0; i < abs(rowOffset+colOffset); i++) {
+                    ChessPosition tempPosition = new ChessPosition(position.getRow() + i, position.getColumn());
+                    if (!tempPosition.equals(position) && board.getPiece(tempPosition) != null) {
+                        return null;
+                    }
+                }
+            }
+        }
+        if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; }
         if (this.type == PieceType.PAWN) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
         return new ChessMove(position, newPosition, null);
     }
@@ -129,10 +152,10 @@ public class ChessPiece {
                 possibleMoves.add(formulateMove(board, myPosition, -2, 1));
                 break;
             case ROOK:
-                for (int i = -8; i <= 8; i++) { // Straight up and down
+                for (int i = -7; i < 8; i++) { // Straight up and down
                     possibleMoves.add(formulateMove(board, myPosition, i, 0));
                 }
-                for (int i = -8; i <= 8; i++) { // Straight left and right
+                for (int i = -7; i < 8; i++) { // Straight left and right
                     possibleMoves.add(formulateMove(board, myPosition, 0, i));
                 }
                 break;
