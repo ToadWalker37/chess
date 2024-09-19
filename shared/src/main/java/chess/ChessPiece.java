@@ -110,6 +110,14 @@ public class ChessPiece {
                 }
                 break;
             case KNIGHT:
+                possibleMoves.add(formulateMove(board, myPosition, 1, -2));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 2));
+                possibleMoves.add(formulateMove(board, myPosition, -1, -2));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 2));
+                possibleMoves.add(formulateMove(board, myPosition, 2, -1));
+                possibleMoves.add(formulateMove(board, myPosition, 2, 1));
+                possibleMoves.add(formulateMove(board, myPosition, -2, -1));
+                possibleMoves.add(formulateMove(board, myPosition, -2, 1));
                 break;
             case ROOK:
                 for (int i = -7; i < 8; i++) { // Straight up and down
