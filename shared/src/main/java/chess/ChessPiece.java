@@ -112,6 +112,12 @@ public class ChessPiece {
             case KNIGHT:
                 break;
             case ROOK:
+                for (int i = -7; i < 8; i++) { // Straight up and down
+                    possibleMoves.add(formulateMove(board, myPosition, i, 0));
+                }
+                for (int i = -7; i < 8; i++) { // Straight left and right
+                    possibleMoves.add(formulateMove(board, myPosition, 0, i));
+                }
                 break;
             case PAWN:
                 break;
