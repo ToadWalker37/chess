@@ -88,6 +88,18 @@ public class ChessPiece {
                 possibleMoves.add(formulateMove(board, myPosition, 1, 1));
                 break;
             case QUEEN:
+                for (int i = -7; i < 8; i++) { // Straight up and down
+                    possibleMoves.add(formulateMove(board, myPosition, i, 0));
+                }
+                for (int i = -7; i < 8; i++) { // Straight left and right
+                    possibleMoves.add(formulateMove(board, myPosition, 0, i));
+                }
+                for (int i = -7; i < 8; i++) { // Diagonal Volvo-logo-style
+                    possibleMoves.add(formulateMove(board, myPosition, i, i));
+                }
+                for (int i = -7; i < 8; i++) { // Diagonal opposite-Volvo-logo-style
+                    possibleMoves.add(formulateMove(board, myPosition, i, -i));
+                }
                 break;
             case BISHOP:
                 break;
