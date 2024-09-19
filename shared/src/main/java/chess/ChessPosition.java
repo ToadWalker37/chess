@@ -33,5 +33,5 @@ public class ChessPosition {
     public boolean isValid() { return !(this.row < 1 || this.row > 8 || this.col < 1 || this.col > 8); }
 
     @Override
-    public String toString() { return "ChessPosition{" + "row=" + row + ", col=" + col + '}'; }
+    public String toString() { return "[" + row + "," + col + ']'; }
 }
