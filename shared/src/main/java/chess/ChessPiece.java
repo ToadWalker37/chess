@@ -59,7 +59,16 @@ public class ChessPiece {
         }
         if (rowOffset == 0 || colOffset == 0) { // if move is straight and there's a blocking piece
             for (int i = 0; i < abs(rowOffset+colOffset); i++) {
-                if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; }
+                if (rowOffset < 0 || colOffset < 0) {
+                    if (board.getPiece(new ChessPosition(position.getRow() - i, position.getColumn() - i)) != null) {
+                        return null;
+                    }
+                }
+                else {
+                    if (board.getPiece(new ChessPosition(position.getRow() + i, position.getColumn() + i)) != null) {
+                        return null;
+                    }
+                }
             }
         }
         if (this.type == PieceType.PAWN) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
@@ -120,10 +129,10 @@ public class ChessPiece {
                 possibleMoves.add(formulateMove(board, myPosition, -2, 1));
                 break;
             case ROOK:
-                for (int i = -7; i < 8; i++) { // Straight up and down
+                for (int i = -8; i <= 8; i++) { // Straight up and down
                     possibleMoves.add(formulateMove(board, myPosition, i, 0));
                 }
-                for (int i = -7; i < 8; i++) { // Straight left and right
+                for (int i = -8; i <= 8; i++) { // Straight left and right
                     possibleMoves.add(formulateMove(board, myPosition, 0, i));
                 }
                 break;

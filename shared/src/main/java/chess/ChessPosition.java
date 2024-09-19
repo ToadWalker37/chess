@@ -11,10 +11,8 @@ public class ChessPosition {
     private final int col;
 
     public ChessPosition(int row, int col) {
-        if (row >=0 && row <= 7) { this.row = row; }
-        else { this.row = -1; }
-        if (col >=0 && col <= 7) { this.col = col; }
-        else { this.col = -1; }
+        this.row = row;
+        this.col = col;
     }
 
     /**
@@ -32,7 +30,7 @@ public class ChessPosition {
     /**
      * @return true if position is valid, false otherwise
      */
-    public boolean isValid() { return (this.row >= 0 && this.col >= 0); }
+    public boolean isValid() { return !(this.row < 1 || this.row > 8 || this.col < 1 || this.col > 8); }
 
     @Override
     public String toString() { return "ChessPosition{" + "row=" + row + ", col=" + col + '}'; }
