@@ -51,7 +51,7 @@ public class ChessPiece {
      */
     public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset) {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
-        if (!newPosition.isValid()) { return null; } // if move takes you off the board
+        if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board
         if (abs(rowOffset) == abs(colOffset)) { // if move is diagonal and there's a blocking piece
             for (int i = 0; i < abs(rowOffset); i++) {
                 if (board.getPiece(new ChessPosition(position.getRow()+i, position.getColumn()+i)) != null) { return null; }
