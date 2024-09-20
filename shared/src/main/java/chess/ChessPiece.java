@@ -14,11 +14,9 @@ import static java.lang.Math.abs;
 public class ChessPiece {
     private PieceType type;
     private ChessGame.TeamColor color;
-    private boolean used;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
-        this.used = false;
     }
 
     /**
@@ -57,9 +55,10 @@ public class ChessPiece {
         if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; } // if you would be taking a piece of your own color
         if (this.type == PieceType.PAWN) {
             boolean promotion = false;
-            if (rowOffset > 1 && this.used) { return null; } // don't allow the initial double move if the piece has been moved
-            if (colOffset == 0 && board.getPiece(new ChessPosition(position.getRow()+1, position.getColumn())) != null) { return null; } // if blocking piece
-            if (abs(colOffset) > 0 && board.getPiece(new ChessPosition(position.getRow()+1, position.getColumn())) == null) { return null; } // if no piece to capture
+            if (rowOffset > 1 && position.getRow() != 7 && this.color == ChessGame.TeamColor.BLACK) { return null; } // disallow double move if black pawn has been moved
+            if (rowOffset > 1 && position.getRow() != 2 && this.color == ChessGame.TeamColor.WHITE) { return null; } // disallow double move if white pawn has been moved
+            if (colOffset == 0 && board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn())) != null) { return null; } // if blocking piece
+            if (abs(colOffset) > 0 && board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset)) == null) { return null; } // if no piece to capture
             if ((this.color == ChessGame.TeamColor.BLACK && newPosition.getRow() == 1) || (this.color == ChessGame.TeamColor.WHITE && newPosition.getRow() == 8)) { // promotion
                 promotion = true;
             }
@@ -215,7 +214,6 @@ public class ChessPiece {
         for (ChessMove possibleMove : possibleMoves) {
             if (possibleMove != null) { validMoves.add(possibleMove); }
         }
-        if (!validMoves.isEmpty()) { this.used = true; }
         return validMoves;
     }
 
