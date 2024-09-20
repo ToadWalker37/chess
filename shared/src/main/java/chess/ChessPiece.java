@@ -49,7 +49,7 @@ public class ChessPiece {
     /**
      * @return null if move is invalid, or the proper move given the rows and columns desired to move
      */
-    public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset) {
+    public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset, PieceType promotionPiece) {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
         if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board or doesn't take you anywhere
         if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; } // if you would be taking a piece of your own color
@@ -84,7 +84,7 @@ public class ChessPiece {
             if ((this.color == ChessGame.TeamColor.BLACK && newPosition.getRow() == 1) || (this.color == ChessGame.TeamColor.WHITE && newPosition.getRow() == 8)) { // promotion
                 promotion = true;
             }
-            if (promotion) { return new ChessMove(position, newPosition, PieceType.QUEEN); }
+            if (promotion) { return new ChessMove(position, newPosition, promotionPiece); }
             else { return new ChessMove(position, newPosition, null); }
         }
         else {
@@ -169,67 +169,70 @@ public class ChessPiece {
         Collection<ChessMove> possibleMoves = new ArrayList<>();
         switch (this.type) {
             case KING:
-                possibleMoves.add(formulateMove(board, myPosition, -1, -1));
-                possibleMoves.add(formulateMove(board, myPosition, -1, 0));
-                possibleMoves.add(formulateMove(board, myPosition, -1, 1));
-                possibleMoves.add(formulateMove(board, myPosition, 0, -1));
-                possibleMoves.add(formulateMove(board, myPosition, 0, 1));
-                possibleMoves.add(formulateMove(board, myPosition, 1, -1));
-                possibleMoves.add(formulateMove(board, myPosition, 1, 0));
-                possibleMoves.add(formulateMove(board, myPosition, 1, 1));
+                possibleMoves.add(formulateMove(board, myPosition, -1, -1, null));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 0, null));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 1, null));
+                possibleMoves.add(formulateMove(board, myPosition, 0, -1, null));
+                possibleMoves.add(formulateMove(board, myPosition, 0, 1, null));
+                possibleMoves.add(formulateMove(board, myPosition, 1, -1, null));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 0, null));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 1, null));
                 break;
             case QUEEN:
                 for (int i = -7; i < 8; i++) { // Straight up and down
-                    possibleMoves.add(formulateMove(board, myPosition, i, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, i, 0, null));
                 }
                 for (int i = -7; i < 8; i++) { // Straight left and right
-                    possibleMoves.add(formulateMove(board, myPosition, 0, i));
+                    possibleMoves.add(formulateMove(board, myPosition, 0, i, null));
                 }
                 for (int i = -7; i < 8; i++) { // Diagonal Volvo-logo-style
-                    possibleMoves.add(formulateMove(board, myPosition, i, i));
+                    possibleMoves.add(formulateMove(board, myPosition, i, i, null));
                 }
                 for (int i = -7; i < 8; i++) { // Diagonal opposite-Volvo-logo-style
-                    possibleMoves.add(formulateMove(board, myPosition, i, -i));
+                    possibleMoves.add(formulateMove(board, myPosition, i, -i, null));
                 }
                 break;
             case BISHOP:
                 for (int i = -7; i < 8; i++) { // Diagonal Volvo-logo-style
-                    possibleMoves.add(formulateMove(board, myPosition, i, i));
+                    possibleMoves.add(formulateMove(board, myPosition, i, i, null));
                 }
                 for (int i = -7; i < 8; i++) { // Diagonal opposite-Volvo-logo-style
-                    possibleMoves.add(formulateMove(board, myPosition, i, -i));
+                    possibleMoves.add(formulateMove(board, myPosition, i, -i, null));
                 }
                 break;
             case KNIGHT:
-                possibleMoves.add(formulateMove(board, myPosition, 1, -2));
-                possibleMoves.add(formulateMove(board, myPosition, 1, 2));
-                possibleMoves.add(formulateMove(board, myPosition, -1, -2));
-                possibleMoves.add(formulateMove(board, myPosition, -1, 2));
-                possibleMoves.add(formulateMove(board, myPosition, 2, -1));
-                possibleMoves.add(formulateMove(board, myPosition, 2, 1));
-                possibleMoves.add(formulateMove(board, myPosition, -2, -1));
-                possibleMoves.add(formulateMove(board, myPosition, -2, 1));
+                possibleMoves.add(formulateMove(board, myPosition, 1, -2, null));
+                possibleMoves.add(formulateMove(board, myPosition, 1, 2, null));
+                possibleMoves.add(formulateMove(board, myPosition, -1, -2, null));
+                possibleMoves.add(formulateMove(board, myPosition, -1, 2, null));
+                possibleMoves.add(formulateMove(board, myPosition, 2, -1, null));
+                possibleMoves.add(formulateMove(board, myPosition, 2, 1, null));
+                possibleMoves.add(formulateMove(board, myPosition, -2, -1, null));
+                possibleMoves.add(formulateMove(board, myPosition, -2, 1, null));
                 break;
             case ROOK:
                 for (int i = -7; i < 8; i++) { // Straight up and down
-                    possibleMoves.add(formulateMove(board, myPosition, i, 0));
+                    possibleMoves.add(formulateMove(board, myPosition, i, 0, null));
                 }
                 for (int i = -7; i < 8; i++) { // Straight left and right
-                    possibleMoves.add(formulateMove(board, myPosition, 0, i));
+                    possibleMoves.add(formulateMove(board, myPosition, 0, i, null));
                 }
                 break;
             case PAWN:
-                if (this.color == ChessGame.TeamColor.BLACK) {
-                    possibleMoves.add(formulateMove(board, myPosition, -1, 0));
-                    possibleMoves.add(formulateMove(board, myPosition, -2, 0));
-                    possibleMoves.add(formulateMove(board, myPosition, -1, -1));
-                    possibleMoves.add(formulateMove(board, myPosition, -1, 1));
-                }
-                else {
-                    possibleMoves.add(formulateMove(board, myPosition, 1, 0));
-                    possibleMoves.add(formulateMove(board, myPosition, 2, 0));
-                    possibleMoves.add(formulateMove(board, myPosition, 1, -1));
-                    possibleMoves.add(formulateMove(board, myPosition, 1, 1));
+                for (PieceType pieceType : PieceType.values()) {
+                    if (pieceType != PieceType.KING && pieceType != PieceType.PAWN) {
+                        if (this.color == ChessGame.TeamColor.BLACK) {
+                            possibleMoves.add(formulateMove(board, myPosition, -1, 0, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, -2, 0, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, -1, -1, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, -1, 1, pieceType));
+                        } else {
+                            possibleMoves.add(formulateMove(board, myPosition, 1, 0, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, 2, 0, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, 1, -1, pieceType));
+                            possibleMoves.add(formulateMove(board, myPosition, 1, 1, pieceType));
+                        }
+                    }
                 }
             break;
         }
