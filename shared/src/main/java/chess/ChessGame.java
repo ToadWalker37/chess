@@ -28,7 +28,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (this.board.getPiece(startPosition) == null) { return null; }
+        if (this.board.getPiece(startPosition) == null) { return null; } return null;
     }
 
     /** Makes a move in a chess game

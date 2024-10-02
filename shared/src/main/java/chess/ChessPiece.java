@@ -28,30 +28,27 @@ public class ChessPiece {
         if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; } // if you would be taking a piece of your own color
         if (this.type == PieceType.PAWN) {
             boolean promotion = false;
-            if (abs(rowOffset) > 1 && position.getRow() != 7 && this.color == ChessGame.TeamColor.BLACK) { return null; } // disallow double move if black pawn has been moved
-            if (abs(rowOffset) > 1 && position.getRow() != 2 && this.color == ChessGame.TeamColor.WHITE) { return null; } // disallow double move if white pawn has been moved
-            for (int i = 1; i <= abs(rowOffset); i++) {
-                if (this.color == ChessGame.TeamColor.BLACK) {
+            if (this.color == ChessGame.TeamColor.BLACK) {
+                if (abs(rowOffset) > 1 && position.getRow() != 7) { return null; } // disallow double move if black pawn has been moved
+                for (int i = 1; i <= abs(rowOffset); i++) {
                     if (colOffset == 0 && board.getPiece(new ChessPosition(position.getRow() - i, position.getColumn())) != null) { return null; } // if blocking piece
                 }
-                if (this.color == ChessGame.TeamColor.WHITE) {
+                if (abs(colOffset) > 0) {
+                    ChessPiece pieceKittyCorner = board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset));
+                    if (pieceKittyCorner == null || pieceKittyCorner.color == ChessGame.TeamColor.BLACK) { return null; } // if no white piece to capture
+                }
+                if ((newPosition.getRow() == 1)) { promotion = true; } // promotion
+            }
+            if (this.color == ChessGame.TeamColor.WHITE) {
+                if (abs(rowOffset) > 1 && position.getRow() != 2) { return null; } // disallow double move if white pawn has been moved
+                for (int i = 1; i <= abs(rowOffset); i++) {
                     if (colOffset == 0 && board.getPiece(new ChessPosition(position.getRow() + i, position.getColumn())) != null) { return null; } // if blocking piece
                 }
-            }
-            if (abs(colOffset) > 0 && this.color == ChessGame.TeamColor.BLACK) {
-                ChessPiece pieceKittyCorner = board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset));
-                if (pieceKittyCorner == null || pieceKittyCorner.color == ChessGame.TeamColor.BLACK) { // if no white piece to capture
-                    return null;
+                if (abs(colOffset) > 0) {
+                    ChessPiece pieceKittyCorner = board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset));
+                    if (pieceKittyCorner == null || pieceKittyCorner.color == ChessGame.TeamColor.WHITE) { return null; } // if no black piece to capture
                 }
-            }
-            if (abs(colOffset) > 0 && this.color == ChessGame.TeamColor.WHITE) {
-                ChessPiece pieceKittyCorner = board.getPiece(new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset));
-                if (pieceKittyCorner == null || pieceKittyCorner.color == ChessGame.TeamColor.WHITE) { // if no black piece to capture
-                    return null;
-                }
-            }
-            if ((this.color == ChessGame.TeamColor.BLACK && newPosition.getRow() == 1) || (this.color == ChessGame.TeamColor.WHITE && newPosition.getRow() == 8)) { // promotion
-                promotion = true;
+                if (newPosition.getRow() == 8) { promotion = true; } // promotion
             }
             if (promotion) { return new ChessMove(position, newPosition, promotionPiece); }
             else { return new ChessMove(position, newPosition, null); }
