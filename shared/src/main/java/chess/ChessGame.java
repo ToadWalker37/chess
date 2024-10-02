@@ -10,37 +10,26 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private boolean teamTurn;
+    private TeamColor teamTurn;
 
-    public ChessGame() {
-        this.teamTurn = true;
-    }
+    public ChessGame() { this.teamTurn = TeamColor.WHITE; }
 
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {
-        if (this.teamTurn) { return TeamColor.WHITE; }
-        else { return TeamColor.BLACK; }
-    }
+    public TeamColor getTeamTurn() { return this.teamTurn; }
 
     /**
      * Set's which teams turn it is
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {
-        if (team == TeamColor.WHITE) { this.teamTurn = true; }
-        else { this.teamTurn = false; }
-    }
+    public void setTeamTurn(TeamColor team) { this.teamTurn = team; }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
-    public enum TeamColor {
-        WHITE,
-        BLACK
-    }
+    public enum TeamColor { WHITE, BLACK }
 
     /**
      * Gets a valid moves for a piece at the given location
