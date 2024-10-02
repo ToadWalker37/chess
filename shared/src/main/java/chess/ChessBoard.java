@@ -28,12 +28,20 @@ public class ChessBoard {
      * Gets a chess piece on the chessboard
      *
      * @param position The position to get the piece from
-     * @return Either the piece at the position, or null if no piece is at that
-     * position
+     * @return Either the piece at the position, or null if no piece is at that position
      */
     public ChessPiece getPiece(ChessPosition position) {
         if (position.isValid()) { return this.Board[position.getRow()-1][position.getColumn()-1]; }
         return null;
+    }
+
+    /**
+     * Removes a chess piece from the chessboard
+     *
+     * @param position The position to remove the piece from
+     */
+    public void removePiece(ChessPosition position) {
+        this.Board[position.getRow()-1][position.getColumn()-1] = null;
     }
 
     /**
