@@ -1,14 +1,8 @@
 package chess;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * For a class that can manage a chess game, making moves on a board
- * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
- */
+/** For a class that can manage a chess game, making moves on a board */
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
@@ -17,36 +11,27 @@ public class ChessGame {
         this.board = new ChessBoard();
     }
 
-    /**
-     * @return Which team's turn it is
-     */
+    /** @return Which team's turn it is */
     public TeamColor getTeamTurn() { return this.teamTurn; }
 
-    /**
-     * Set's which teams turn it is
-     *
+    /** Sets which team's turn it is
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) { this.teamTurn = team; }
 
-    /**
-     * Enum identifying the 2 possible teams in a chess game
-     */
+    /** Enum identifying the 2 possible teams in a chess game */
     public enum TeamColor { WHITE, BLACK }
 
-    /**
-     * Gets a valid moves for a piece at the given location
+    /** Gets a valid moves for a piece at the given location
      *
      * @param startPosition the piece to get valid moves for
-     * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
+     * @return Set of valid moves for requested piece, or null if no piece at startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if (this.board.getPiece(startPosition) == null) { return null; }
     }
 
-    /**
-     * Makes a move in a chess game
+    /** Makes a move in a chess game
      *
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
@@ -59,8 +44,7 @@ public class ChessGame {
         else { throw new InvalidMoveException(move.toString()); }
     }
 
-    /**
-     * Determines if the given team is in check
+    /** Determines if the given team is in check
      *
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
@@ -69,8 +53,7 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Determines if the given team is in checkmate
+    /** Determines if the given team is in checkmate
      *
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
@@ -79,9 +62,7 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Determines if the given team is in stalemate, which here is defined as having
-     * no valid moves
+    /** Determines if the given team is in stalemate, which here is defined as having no valid moves
      *
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
@@ -90,16 +71,12 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Sets this game's chessboard with a given board
-     *
+    /** Sets this game's chessboard with a given board
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) { this.board = board; }
 
-    /**
-     * Gets the current chessboard
-     *
+    /** Gets the current chessboard
      * @return the chessboard
      */
     public ChessBoard getBoard() { return this.board; }

@@ -1,13 +1,7 @@
 package chess;
-
 import java.util.Objects;
 
-/**
- * Represents moving a chess piece on a chessboard
- * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
- */
+/** Represents moving a chess piece on a chessboard */
 public class ChessMove {
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
@@ -19,24 +13,17 @@ public class ChessMove {
         this.promotionPiece = promotionPiece;
     }
 
-    /**
-     * @return ChessPosition of starting location
-     */
+    /** @return ChessPosition of starting location */
     public ChessPosition getStartPosition() {
         return this.startPosition;
     }
 
-    /**
-     * @return ChessPosition of ending location
-     */
+    /** @return ChessPosition of ending location */
     public ChessPosition getEndPosition() {
         return this.endPosition;
     }
 
-    /**
-     * Gets the type of piece to promote a pawn to if pawn promotion is part of this
-     * chess move
-     *
+    /** Gets the type of piece to promote a pawn to if pawn promotion is part of this chess move
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
@@ -44,9 +31,7 @@ public class ChessMove {
     }
 
     @Override
-    public String toString() {
-        return "start:" + startPosition + ", end:" + endPosition + ", promotionPiece:" + promotionPiece;
-    }
+    public String toString() { return "start:" + startPosition + ", end:" + endPosition + ", promotionPiece:" + promotionPiece; }
 
     @Override
     public boolean equals(Object o) {
@@ -57,7 +42,5 @@ public class ChessMove {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(startPosition, endPosition, promotionPiece);
-    }
+    public int hashCode() { return Objects.hash(startPosition, endPosition, promotionPiece); }
 }
