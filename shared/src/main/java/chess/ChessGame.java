@@ -88,10 +88,13 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean checkmate = true;
-        if (!this.isInCheck(teamColor)) checkmate = false;
+        if (!this.isInCheck(teamColor)) return false;
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
-                Collection<ChessMove> possibleMoves = this.board.getPiece(new ChessPosition(row, col)).pieceMoves(this.board, new ChessPosition(row, col));
+                Collection<ChessMove> possibleMoves;
+                if (this.board.getPiece(new ChessPosition(row, col)) != null) {
+                    possibleMoves = this.board.getPiece(new ChessPosition(row, col)).pieceMoves(this.board, new ChessPosition(row, col));
+                } else { possibleMoves = new ArrayList<>(); }
                 Collection<ChessMove> possibleHomeTeamMoves = new ArrayList<>();
                 for (ChessMove move : possibleMoves) {
                     if (board.getPiece(move.getStartPosition()) != null && board.getPiece(move.getStartPosition()).getTeamColor() == teamColor) { possibleHomeTeamMoves.add(move); }
@@ -116,7 +119,30 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean stalemate = true;
+        if (this.isInCheck(teamColor)) return false;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                Collection<ChessMove> possibleMoves;
+                if (this.board.getPiece(new ChessPosition(row, col)) != null) {
+                    possibleMoves = this.board.getPiece(new ChessPosition(row, col)).pieceMoves(this.board, new ChessPosition(row, col));
+                } else { possibleMoves = new ArrayList<>(); }
+                Collection<ChessMove> possibleHomeTeamMoves = new ArrayList<>();
+                for (ChessMove move : possibleMoves) {
+                    if (board.getPiece(move.getStartPosition()) != null && board.getPiece(move.getStartPosition()).getTeamColor() == teamColor) { possibleHomeTeamMoves.add(move); }
+                }
+                for (ChessMove move : possibleHomeTeamMoves) {
+                    ChessPiece thisPiece = board.getPiece(move.getStartPosition());
+                    ChessPiece targetedPiece = board.getPiece(move.getEndPosition());
+                    this.board.addPiece(move.getEndPosition(), thisPiece);
+                    this.board.removePiece(move.getStartPosition());
+                    if (!isInCheck(thisPiece.getTeamColor())) { stalemate = false; }
+                    this.board.addPiece(move.getStartPosition(), thisPiece);
+                    this.board.addPiece(move.getEndPosition(), targetedPiece);
+                }
+            }
+        }
+        return stalemate;
     }
 
     /** Sets this game's chessboard with a given board
