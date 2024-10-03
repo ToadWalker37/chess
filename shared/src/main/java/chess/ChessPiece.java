@@ -22,7 +22,7 @@ public class ChessPiece {
     public PieceType getPieceType() { return this.type; }
 
     /** @return null if move is invalid, or the proper move given the rows and columns desired to move */
-    public ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset, PieceType promotionPiece) {
+    private ChessMove formulateMove(ChessBoard board, ChessPosition position, int rowOffset, int colOffset, PieceType promotionPiece) {
         ChessPosition newPosition = new ChessPosition(position.getRow()+rowOffset, position.getColumn()+colOffset);
         if (!newPosition.isValid() || position.equals(newPosition)) { return null; } // if move takes you off the board or doesn't take you anywhere
         if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == this.color) { return null; } // if you would be taking a piece of your own color

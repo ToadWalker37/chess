@@ -37,7 +37,7 @@ public class ChessGame {
             ChessPiece targetedPiece = this.board.getPiece(possibleMove.getEndPosition());
             this.board.addPiece(possibleMove.getEndPosition(), thisPiece);
             this.board.removePiece(possibleMove.getStartPosition());
-            if (!isInCheck(thisPiece.getTeamColor()) && !isInStalemate(thisPiece.getTeamColor())) { validMoves.add(possibleMove); }
+            if (!isInCheck(thisPiece.getTeamColor())) { validMoves.add(possibleMove); }
             this.board.addPiece(possibleMove.getStartPosition(), thisPiece);
             this.board.addPiece(possibleMove.getEndPosition(), targetedPiece);
         }
@@ -57,10 +57,10 @@ public class ChessGame {
                 this.validMoves(move.getStartPosition()).contains(move)
         ) {
             if (move.getPromotionPiece() == null) { this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition())); }
-            else { this.board.addPiece(move.getEndPosition(), new ChessPiece(this.board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece())); }
+            else { this.board.addPiece(move.getEndPosition(), new ChessPiece(this.teamTurn, move.getPromotionPiece())); }
             this.board.removePiece(move.getStartPosition());
-            if (this.teamTurn == TeamColor.WHITE) { setTeamTurn(TeamColor.BLACK); }
-            else { setTeamTurn(TeamColor.WHITE); }
+            if (this.teamTurn == TeamColor.WHITE) { this.teamTurn = TeamColor.BLACK; }
+            else { this.teamTurn = TeamColor.WHITE; }
         }
         else { throw new InvalidMoveException(); }
     }
@@ -96,7 +96,7 @@ public class ChessGame {
      * @param mate whether the team is going to have no future next turn
      * @return True if the specified team will have no possible moves, false otherwise
      */
-    private boolean isFutureViable(TeamColor teamColor, boolean mate) {
+    private boolean isFutureInviable(TeamColor teamColor, boolean mate) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 Collection<ChessMove> possibleMoves;
@@ -128,7 +128,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean checkmate = true;
-        return this.isInCheck(teamColor) && isFutureViable(teamColor, checkmate);
+        return this.isInCheck(teamColor) && isFutureInviable(teamColor, checkmate);
     }
 
     /** Determines if the given team is in stalemate, which here is defined as having no valid moves
@@ -138,7 +138,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         boolean stalemate = true;
-        return !this.isInCheck(teamColor) && isFutureViable(teamColor, stalemate);
+        return !this.isInCheck(teamColor) && isFutureInviable(teamColor, stalemate);
     }
 
     /** Sets this game's chessboard with a given board
