@@ -23,6 +23,11 @@ public class ChessMove {
         return this.endPosition;
     }
 
+    /** @return new ChessMove that would undo the current ChessMove */
+    public ChessMove getReverse() {
+        return new ChessMove(this.endPosition, this.startPosition, null);
+    }
+
     /** Gets the type of piece to promote a pawn to if pawn promotion is part of this chess move
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
