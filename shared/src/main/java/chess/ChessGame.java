@@ -81,7 +81,13 @@ public class ChessGame {
         return false;
     }
 
-    private boolean isFutureViable(TeamColor teamColor, boolean checkmate) {
+    /** Determines if the given team is in checkmate
+     *
+     * @param teamColor which team to check for checkmate/stalemate
+     * @param mate whether the team is going to have no future next turn
+     * @return True if the specified team will have no possible moves, false otherwise
+     */
+    private boolean isFutureViable(TeamColor teamColor, boolean mate) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 Collection<ChessMove> possibleMoves;
@@ -97,13 +103,13 @@ public class ChessGame {
                     ChessPiece targetedPiece = board.getPiece(move.getEndPosition());
                     this.board.addPiece(move.getEndPosition(), thisPiece);
                     this.board.removePiece(move.getStartPosition());
-                    if (!isInCheck(thisPiece.getTeamColor())) { checkmate = false; }
+                    if (!isInCheck(thisPiece.getTeamColor())) { mate = false; }
                     this.board.addPiece(move.getStartPosition(), thisPiece);
                     this.board.addPiece(move.getEndPosition(), targetedPiece);
                 }
             }
         }
-        return checkmate;
+        return mate;
     }
 
     /** Determines if the given team is in checkmate
