@@ -9,6 +9,7 @@ public class ChessGame {
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
+        this.board.resetBoard();
     }
 
     /** @return Which team's turn it is */
@@ -50,7 +51,8 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if (this.validMoves(move.getStartPosition()) != null && this.validMoves(move.getStartPosition()).contains(move)) {
-            this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition()));
+            if (move.getPromotionPiece() == null) { this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition())); }
+            else { this.board.addPiece(move.getEndPosition(), new ChessPiece(this.board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece())); }
             this.board.removePiece(move.getStartPosition());
         }
         else { throw new InvalidMoveException(); }
