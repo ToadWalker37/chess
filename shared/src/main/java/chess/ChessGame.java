@@ -50,10 +50,17 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (this.validMoves(move.getStartPosition()) != null && this.validMoves(move.getStartPosition()).contains(move)) {
+        if (
+                this.board.getPiece(move.getStartPosition()) != null &&
+                this.teamTurn == this.board.getPiece(move.getStartPosition()).getTeamColor() &&
+                this.validMoves(move.getStartPosition()) != null &&
+                this.validMoves(move.getStartPosition()).contains(move)
+        ) {
             if (move.getPromotionPiece() == null) { this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition())); }
             else { this.board.addPiece(move.getEndPosition(), new ChessPiece(this.board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece())); }
             this.board.removePiece(move.getStartPosition());
+            if (this.teamTurn == TeamColor.WHITE) { setTeamTurn(TeamColor.BLACK); }
+            else { setTeamTurn(TeamColor.WHITE); }
         }
         else { throw new InvalidMoveException(); }
     }
